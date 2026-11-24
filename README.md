@@ -10,7 +10,7 @@ OpenAPI documentation and automated API tests for the Linguaflash Firebase proje
 - [`openapi.yaml`](openapi.yaml): spec, the only file to edit by hand.
 - [`openapi.json`](openapi.json): generated from the spec.
 - [`index.html`](index.html), [`js/app.js`](js/app.js), `vendor/swagger-ui/`: Swagger UI page.
-- [`scripts/build.js`](scripts/build.js): validates the spec, regenerates `openapi.json` and the spec embedded in `index.html`.
+- [`scripts/build.js`](scripts/build.js): validates the spec, regenerates `openapi.json`, the spec embedded in `index.html`, and copies Swagger UI assets into `vendor/swagger-ui/`.
 - [`config/firebase.config.js`](config/firebase.config.js): Firebase web config.
 - `tests/`: Jest tests for Auth and Firestore.
 - [`vercel.json`](vercel.json): Vercel deployment config.
@@ -38,7 +38,7 @@ After editing `openapi.yaml`, run `npm run build` before committing.
 
 ## Deployment
 
-The repository root is a static site. Import the repo into Vercel with the default settings, then deploy. `vercel.json` sets clean URLs.
+The repository root is a static site. Import the repo into Vercel with the default settings, then deploy. `vercel.json` sets clean URLs. Vercel runs `npm run build`, which generates `vendor/swagger-ui/` from `swagger-ui-dist`; the `vendor/` directory is not committed.
 
 ## Notes
 

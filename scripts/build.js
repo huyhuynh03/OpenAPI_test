@@ -12,6 +12,8 @@ const root = path.join(__dirname, "..");
 const specPath = path.join(root, "openapi.yaml");
 const jsonPath = path.join(root, "openapi.json");
 const htmlPath = path.join(root, "index.html");
+const swaggerUiPath = path.join(root, "node_modules", "swagger-ui-dist");
+const vendorPath = path.join(root, "vendor", "swagger-ui");
 const validateOnly = process.argv.includes("--validate");
 
 async function main() {
@@ -42,6 +44,19 @@ async function main() {
     fs.writeFileSync(htmlPath, updated);
     console.log("Updated embedded spec in index.html");
   }
+
+  // index.html loads Swagger UI from vendor/swagger-ui/. The assets are generated
+  // from the swagger-ui-dist dependency so they are available on Vercel without
+  // committing large vendor files.
+  if (!fs.existsSync(swaggerUiPath)) {
+    throw new Error(
+      "swagger-ui-dist not found. Run npm install before building.",
+    );
+  }
+  fs.rmSync(vendorPath, { recursive: true, force: true });
+  fs.mkdirSync(path.dirname(vendorPath), { recursive: true });
+  fs.cpSync(swaggerUiPath, vendorPath, { recursive: true });
+  console.log("Copied Swagger UI assets to vendor/swagger-ui");
 }
 
 main().catch((err) => {
