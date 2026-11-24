@@ -5,7 +5,8 @@ const FS_BASE = `https://firestore.googleapis.com/v1/projects/${config.projectId
 
 describe("Cloud Firestore REST API - Linguaflash", () => {
   test("unauthenticated list request returns a well-formed response", async () => {
-    const res = await fetch(`${FS_BASE}/__api_test__?key=${config.apiKey}`);
+    // Collection IDs starting with "__" are reserved by Firestore, so use a normal name.
+    const res = await fetch(`${FS_BASE}/api_tests?key=${config.apiKey}`);
     // 200 if rules allow public read, 403 PERMISSION_DENIED if locked down.
     expect([200, 403, 404]).toContain(res.status);
     const data = await res.json();
