@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linguaflash Firebase API Docs</title>
+  <link rel="icon" type="image/png" href="vendor/swagger-ui/favicon-32x32.png" />
+  <link rel="stylesheet" href="vendor/swagger-ui/swagger-ui.css" />
+  <style>
+    body { margin: 0; background: #fafafa; }
+  </style>
+</head>
+<body>
+  <div id="swagger-ui"></div>
+
+  <!-- Spec embedded by scripts/build.js. Do not edit by hand. -->
+  <script id="openapi-spec" type="application/json">
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Linguaflash Firebase API",
+    "version": "1.0.0",
+    "description": "OpenAPI description of the Firebase REST endpoints used by the Linguaflash project\n(project `linguaflash-f5591`).\n\n- **Auth**: Identity Toolkit REST API (`identitytoolkit.googleapis.com`).\n- **Firestore**: Cloud Firestore REST API (`firestore.googleapis.com`).\n\nAll requests pass the public web `apiKey` as the `key` query parameter.\nFirestore data access is governed by Security Rules; requests without a valid\nID token are expected to be denied on protected collections.\n"
+  },
+  "servers": [
+    {
+      "url": "https://identitytoolkit.googleapis.com/v1",
+      "description": "Firebase Auth (Identity Toolkit)"
+    },
+    {
+      "url": "https://firestore.googleapis.com/v1/projects/linguaflash-f5591/databases/(default)",
+      "description": "Cloud Firestore (default database)"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Firebase Authentication (email/password)"
+    },
+    {
+      "name": "Firestore",
+      "description": "Cloud Firestore documents"
+    }
+  ],
+  "components": {
+    "parameters": {
+      "ApiKey": {
+        "name": "key",
+        "in": "query",
+        "required": true,
+        "description": "Firebase web API key.",
+        "schema": {
+          "type": "string",
+          "example": "AIzaSyB0owP69y_XqcUwqHx2kD2xJRSeGEqSC6A"
+        }
+      },
+      "DocumentId": {
+        "name": "documentId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "schemas": {
+      "AuthCredentials": {
+        "type": "object",
+        "required": [
+          "email",
+          "password"
+        ],
+        "properties": {
+          "email": {
+            "type": "string",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "format": "password"
+          },
+          "returnSecureToken": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
+      "AuthSuccess": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "example": "identitytoolkit#VerifyPasswordResponse"
+          },
+          "localId": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "idToken": {
+            "type": "string"
+          },
+          "refreshToken": {
+            "type": "string"
+          },
+          "expiresIn": {
+            "type": "string",
+            "example": "3600"
+          }
+        }
+      },
+      "FirebaseError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "integer",
+                "example": 400
+              },
+              "message": {
+                "type": "string",
+                "example": "EMAIL_NOT_FOUND"
+              },
+              "status": {
+                "type": "string",
+                "example": "INVALID_ARGUMENT"
+              }
+            }
+          }
+        }
+      },
+      "FirestoreValue": {
+        "type": "object",
+        "description": "Typed Firestore field value.",
+        "properties": {
+          "stringValue": {
+            "type": "string"
+          },
+          "integerValue": {
+            "type": "string"
+          },
+          "booleanValue": {
+            "type": "boolean"
+          },
+          "timestampValue": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "FirestoreDocument": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "projects/linguaflash-f5591/databases/(default)/documents/users/abc123"
+          },
+          "fields": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/FirestoreValue"
+            }
+          },
+          "createTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updateTime": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "FirestoreWrite": {
+        "type": "object",
+        "properties": {
+          "fields": {
+            "type": "object",
+            "additionalProperties": {
+              "$ref": "#/components/schemas/FirestoreValue"
+            }
+          }
+        }
+      },
+      "FirestoreError": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "integer"
+              },
+              "message": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "example": "PERMISSION_DENIED"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/accounts:signInWithPassword": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Sign in with email and password",
+        "operationId": "signInWithPassword",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ApiKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthCredentials"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Signed in",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthSuccess"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid credentials or request (EMAIL_NOT_FOUND, INVALID_PASSWORD, MISSING_PASSWORD, INVALID_LOGIN_CREDENTIALS, API key not valid)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FirebaseError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts:signUp": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Create an account with email and password",
+        "operationId": "signUp",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ApiKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthCredentials"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Account created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthSuccess"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Request rejected (INVALID_EMAIL, WEAK_PASSWORD, EMAIL_EXISTS)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FirebaseError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/accounts:lookup": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Look up account info by ID token",
+        "operationId": "lookupAccount",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/ApiKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "idToken"
+                ],
+                "properties": {
+                  "idToken": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Account information",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FirebaseError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/linguaflash-f5591/databases/(default)/documents/{collection}": {
+      "parameters": [
+        {
+          "name": "collection",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "users"
+          }
+        },
+        {
+          "$ref": "#/components/parameters/ApiKey"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Firestore"
+        ],
+        "summary": "List documents in a collection",
+        "operationId": "listDocuments",
+        "responses": {
+          "200": {
+            "description": "Documents list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "documents": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/FirestoreDocument"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "PERMISSION_DENIED under Security Rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FirestoreError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Firestore"
+        ],
+        "summary": "Create a document with an auto-generated ID",
+        "operationId": "createDocument",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FirestoreWrite"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Document created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FirestoreDocument"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FirestoreError"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "PERMISSION_DENIED under Security Rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FirestoreError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/linguaflash-f5591/databases/(default)/documents/{collection}/{documentId}": {
+      "parameters": [
+        {
+          "name": "collection",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "example": "users"
+          }
+        },
+        {
+          "$ref": "#/components/parameters/DocumentId"
+        },
+        {
+          "$ref": "#/components/parameters/ApiKey"
+        }
+      ],
+      "get": {
+        "tags": [
+          "Firestore"
+        ],
+        "summary": "Get a document",
+        "operationId": "getDocument",
+        "responses": {
+          "200": {
+            "description": "Document",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FirestoreDocument"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "PERMISSION_DENIED under Security Rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FirestoreError"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Document not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FirestoreError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Firestore"
+        ],
+        "summary": "Update fields of a document",
+        "operationId": "updateDocument",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FirestoreWrite"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Document updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FirestoreDocument"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "PERMISSION_DENIED under Security Rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FirestoreError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Firestore"
+        ],
+        "summary": "Delete a document",
+        "operationId": "deleteDocument",
+        "responses": {
+          "200": {
+            "description": "Document deleted"
+          },
+          "403": {
+            "description": "PERMISSION_DENIED under Security Rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FirestoreError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+</script>
+
+  <script src="vendor/swagger-ui/swagger-ui-bundle.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
