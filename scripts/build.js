@@ -46,8 +46,8 @@ async function main() {
   }
 
   // index.html loads Swagger UI from vendor/swagger-ui/. The assets are generated
-  // from the swagger-ui-dist dependency so they are available on Vercel without
-  // committing large vendor files.
+  // from the swagger-ui-dist dependency during the GitHub Pages build, so large
+  // vendor files do not need to be committed.
   if (!fs.existsSync(swaggerUiPath)) {
     throw new Error(
       "swagger-ui-dist not found. Run npm install before building.",
