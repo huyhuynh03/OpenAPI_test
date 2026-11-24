@@ -1,0 +1,18 @@
+{
+  "name": "linguaflash-firebase-api-tests",
+  "version": "1.0.0",
+  "description": "API tests for Linguaflash Firebase (Auth + Firestore REST)",
+  "private": true,
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "jest --runInBand",
+    "test:auth": "jest --runInBand tests/auth.test.js",
+    "test:firestore": "jest --runInBand tests/firestore.test.js"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
