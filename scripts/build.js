@@ -28,15 +28,20 @@ async function main() {
   console.log("Wrote openapi.json");
 
   const html = fs.readFileSync(htmlPath, "utf8");
-  const updated = html.replace(
-    /(<script id="openapi-spec" type="application\/json">)[\s\S]*?(<\/script>)/,
-    (_, open, close) => open + "\n" + json + close
-  );
-  if (updated === html) {
+  const blockRe =
+    /(<script\s+id=["']openapi-spec["']\s+type=["']application\/json["']\s*>)[\s\S]*?(<\/script>)/i;
+  if (!blockRe.test(html)) {
     throw new Error('index.html is missing <script id="openapi-spec"> block');
   }
-  fs.writeFileSync(htmlPath, updated);
-  console.log("Updated embedded spec in index.html");
+  const eol = html.includes("\r\n") ? "\r\n" : "\n";
+  const embedded = json.replace(/\n/g, eol);
+  const updated = html.replace(blockRe, (_, open, close) => open + eol + embedded + close);
+  if (updated === html) {
+    console.log("index.html already up to date");
+  } else {
+    fs.writeFileSync(htmlPath, updated);
+    console.log("Updated embedded spec in index.html");
+  }
 }
 
 main().catch((err) => {
